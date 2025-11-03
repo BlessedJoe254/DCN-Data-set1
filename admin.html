@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Dashboard | DCN Nchiru</title>
+<link rel="stylesheet" href="style.css" />
+<style>
+body { font-family: Arial, sans-serif; background: #0f3057; color: white; margin:0; }
+
+/* HEADER */
+header {
+  background: linear-gradient(to right, #001f3f, #0a3d62);
+  color: white;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+header img.logo {
+  height: 50px;
+  border-radius: 6px;
+}
+
+.dashboard-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+button.logout {
+  background: #ff8c00;
+  color: white;
+  border: none;
+  width: 80px;
+  height: 25px;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+  padding: 0;
+}
+
+button.logout:hover { background: #e07b00; }
+
+/* CONTAINER */
+.container {
+  max-width: 900px;
+  margin: 20px auto;
+  background: #fff;
+  color: #0f3057;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  overflow-x: auto;
+}
+
+h2 { color: #ee6c4d; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  min-width: 600px;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th { background: #001f3f; color: white; }
+
+input, select, button {
+  padding: 8px;
+  margin: 6px 0;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+button {
+  background: #0a3d62;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover { background: #06548b; }
+
+.delete-btn {
+  background: #ff4d4d;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  border-radius: 4px;
+}
+
+.delete-btn:hover { background: #e03d3d; }
+
+footer {
+  text-align: center;
+  padding: 12px;
+  background: linear-gradient(to right, #001f3f, #0a3d62);
+  color: white;
+  margin-top: 20px;
+}
+
+/* MOBILE RESPONSIVE */
+@media (max-width: 768px) {
+  .header-left { flex-direction: column; align-items: flex-start; }
+  .dashboard-title { margin-top: 6px; font-size: 1rem; }
+  button.logout { align-self: flex-end; margin-top: 6px; width: 70px; height: 22px; font-size: 0.8rem; }
+  .container { margin: 10px; padding: 15px; }
+  table { font-size: 0.8rem; }
+}
+
+@media (max-width: 480px) {
+  .dashboard-title { font-size: 0.9rem; }
+  button.logout { width: 60px; height: 20px; font-size: 0.7rem; }
+  input, select, button { padding: 6px; font-size: 0.9rem; }
+
+  /* Make table rows display as cards */
+  table, thead, tbody, th, td, tr { display: block; }
+  thead tr { display: none; }
+  tr { margin-bottom: 15px; background: #f9f9f9; color: #0f3057; padding: 10px; border-radius: 8px; }
+  td {
+    border: none;
+    padding: 6px 0;
+    position: relative;
+    padding-left: 50%;
+    text-align: left;
+  }
+  td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 10px;
+    font-weight: bold;
+  }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <img src="assets/logo.png" alt="DCN Logo" class="logo">
+    <span class="dashboard-title">Admin Dashboard – DCN Nchiru</span>
+  </div>
+  <button class="logout" onclick="logout()">Logout</button>
+</header>
+
+<div class="container">
+  <h2>Add New Member</h2>
+  <form id="memberForm">
+    <input type="text" id="fullname" placeholder="Full Name" required />
+    <select id="gender" required>
+      <option value="">-- Select Gender --</option>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+    </select>
+    <input type="text" id="phone" placeholder="Phone Number" required />
+    <input type="text" id="department" placeholder="Department (e.g., Choir)" />
+    <input type="text" id="residence" placeholder="Residence / Estate" />
+    <input type="text" id="fellowship" placeholder="Fellowship" />
+    <button type="submit">Add Member</button>
+  </form>
+</div>
+
+<div class="container">
+  <h2>All Registered Members</h2>
+  <table id="membersTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Full Name</th>
+        <th>Gender</th>
+        <th>Phone</th>
+        <th>Department</th>
+        <th>Residence</th>
+        <th>Fellowship</th>
+        <th>Added By</th>
+        <th>Registered On</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<footer>
+  <p><strong>Deliverance Church DCN Nchiru</strong></p>
+  <p>P.O. Box 1234, Nchiru, Meru County, Kenya</p>
+  <p><em>“Raising Champions for Christ”</em></p>
+</footer>
+
+<script>
+window.onload = async () => {
+  try {
+    const res = await fetch('/api/check-session');
+    const data = await res.json();
+    if (!data.loggedIn) {
+      alert('Please log in first!');
+      window.location.href = '/login.html';
+    } else {
+      window.adminUser = data.admin;
+      fetchMembers();
+    }
+  } catch (err) {
+    alert("Server error. Please refresh or try again later.");
+  }
+};
+
+async function logout() {
+  await fetch('/api/logout');
+  window.location.href = '/login.html';
+}
+
+async function fetchMembers() {
+  try {
+    const res = await fetch('/members');
+    const members = await res.json();
+    const tbody = document.querySelector("#membersTable tbody");
+    tbody.innerHTML = "";
+
+    members.forEach(m => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td data-label="ID">${m.id}</td>
+        <td data-label="Full Name">${m.fullname}</td>
+        <td data-label="Gender">${m.gender}</td>
+        <td data-label="Phone">${m.phone}</td>
+        <td data-label="Department">${m.department || ''}</td>
+        <td data-label="Residence">${m.residence || ''}</td>
+        <td data-label="Fellowship">${m.fellowship || ''}</td>
+        <td data-label="Added By">${m.added_by || ''}</td>
+        <td data-label="Registered On">${new Date(m.created_at).toLocaleString()}</td>
+        <td data-label="Action"><button class="delete-btn" onclick="deleteMember(${m.id})">Delete</button></td>
+      `;
+      tbody.appendChild(row);
+    });
+  } catch (err) {
+    console.error("❌ Failed to fetch members:", err);
+  }
+}
+
+document.getElementById("memberForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const member = {
+    fullname: document.getElementById("fullname").value,
+    gender: document.getElementById("gender").value,
+    phone: document.getElementById("phone").value,
+    department: document.getElementById("department").value,
+    residence: document.getElementById("residence").value,
+    fellowship: document.getElementById("fellowship").value
+  };
+
+  try {
+    const res = await fetch('/add-member', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(member)
+    });
+    const data = await res.json();
+    alert(data.message);
+    if(data.success) {
+      document.getElementById("memberForm").reset();
+      fetchMembers();
+    }
+  } catch (err) {
+    alert("❌ Failed to add member. Try again later.");
+    console.error(err);
+  }
+});
+
+async function deleteMember(id) {
+  if(!confirm("Are you sure you want to delete this member?")) return;
+  try {
+    const res = await fetch(`/delete-member/${id}`, { method: 'DELETE' });
+    const data = await res.json();
+    alert(data.message);
+    if(data.success) fetchMembers();
+  } catch (err) {
+    alert("❌ Failed to delete member. Try again later.");
+    console.error(err);
+  }
+}
+</script>
+</body>
+</html>

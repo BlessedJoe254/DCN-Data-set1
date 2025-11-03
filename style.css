@@ -1,0 +1,178 @@
+/* ====== Deliverance Church International Nchiru Theme ====== */
+body {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f7f7f7;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* ====== Header ====== */
+header {
+  background: #b22222; /* deep red */
+  color: white;
+  padding: 20px 0;
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border-bottom: 5px solid #ffcc00; /* gold underline */
+}
+
+header h1 {
+  margin: 10px 0 0;
+}
+
+/* ===== Logo ===== */
+.logo {
+  width: 90px;
+  height: auto;
+  display: block;
+  margin: 0 auto 5px;
+}
+
+/* ====== Hero Section ====== */
+.hero {
+  background: linear-gradient(rgba(178, 34, 34, 0.85), rgba(178, 34, 34, 0.85)),
+              url('church-bg.jpg') center/cover no-repeat;
+  color: white;
+  text-align: center;
+  padding: 100px 20px;
+  border-bottom: 5px solid #ffcc00;
+}
+
+.hero h2 {
+  font-size: 2.4rem;
+  margin-bottom: 20px;
+  color: #ffcc00;
+  font-weight: 700;
+}
+
+.hero p {
+  font-size: 1.1rem;
+  max-width: 700px;
+  margin: 0 auto 30px;
+  line-height: 1.8;
+}
+
+.hero-btn {
+  background: #ffcc00;
+  color: #b22222;
+  padding: 14px 30px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.hero-btn:hover {
+  background: white;
+  color: #b22222;
+  transform: scale(1.05);
+}
+
+/* ====== Containers ====== */
+.container {
+  width: 90%;
+  max-width: 950px;
+  margin: 40px auto;
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 0 10px rgba(178, 34, 34, 0.2);
+  text-align: center;
+}
+
+/* ====== Headings ====== */
+h2 {
+  color: #b22222;
+  border-left: 5px solid #ffcc00;
+  padding-left: 12px;
+  text-align: left;
+  font-size: 1.6rem;
+}
+
+/* ====== Buttons ====== */
+button {
+  background: #b22222;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background: #ffcc00;
+  color: #b22222;
+  transform: scale(1.05);
+}
+
+/* ====== Forms ====== */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+input, select {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 1rem;
+}
+
+input:focus, select:focus {
+  border-color: #b22222;
+  box-shadow: 0 0 4px rgba(178, 34, 34, 0.3);
+}
+
+/* ====== Table ====== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table th, table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+table th {
+  background: #b22222;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+table tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* ====== Footer ====== */
+footer {
+  text-align: center;
+  margin-top: 50px;
+  padding: 25px 15px;
+  background: #b22222;
+  color: white;
+  border-top: 5px solid #ffcc00;
+  font-size: 0.95rem;
+}
+
+footer p {
+  margin: 5px 0;
+}
+
+footer em {
+  color: #ffcc00;
+}

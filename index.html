@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DCN Data System</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f3057;
+      color: white;
+    }
+
+    header {
+      background: #001f3f;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: white;
+    }
+
+    header img.logo {
+      height: 50px;
+    }
+
+    header nav a {
+      color: #ee6c4d;
+      margin-left: 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    header nav a:hover {
+      text-decoration: underline;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 80px 20px;
+      background: linear-gradient(to bottom right, #0f3057, #001f3f);
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: #ee6c4d;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 0 auto;
+      color: #fff;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #fff;
+      color: #0f3057;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .container h2 {
+      color: #ee6c4d;
+      margin-bottom: 20px;
+    }
+
+    .container p {
+      color: #001f3f;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #001f3f;
+      color: white;
+    }
+
+    button {
+      background: #ee6c4d;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 12px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #ff8566;
+    }
+
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 2rem; }
+      .container { padding: 20px; margin: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="assets/logo.png" alt="DCN Logo" class="logo">
+    <nav>
+      <a href="login.html">Admin Login</a>
+      <a href="register-admin.html">Register Admin</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Welcome to DCN Data System</h1>
+    <p>Manage church members, departments, and fellowships efficiently with the DCN Data System.</p>
+  </section>
+
+  <div class="container">
+    <h2>About DCN Data System</h2>
+    <p>The DCN Data System is designed to streamline administration, track members, and maintain church records digitally for DCN Nchiru. Experience faster, organized, and secure data management for all church activities.</p>
+    <button onclick="window.location.href='login.html'">Go to Admin Dashboard</button>
+  </div>
+
+  <footer>
+    <p><strong>Deliverance Church DCN Nchiru</strong></p>
+    <p>P.O. Box 1234, Nchiru, Meru County, Kenya</p>
+    <p><em>“Raising Champions for Christ”</em></p>
+  </footer>
+
+</body>
+</html>
