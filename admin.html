@@ -112,14 +112,6 @@ button:hover { background: #06548b; }
 
 .delete-btn:hover { background: #e03d3d; }
 
-footer {
-  text-align: center;
-  padding: 12px;
-  background: linear-gradient(to right, #001f3f, #0a3d62);
-  color: white;
-  margin-top: 20px;
-}
-
 /* MOBILE RESPONSIVE */
 @media (max-width: 768px) {
   .header-left { flex-direction: column; align-items: flex-start; }
@@ -134,7 +126,6 @@ footer {
   button.logout { width: 60px; height: 20px; font-size: 0.7rem; }
   input, select, button { padding: 6px; font-size: 0.9rem; }
 
-  /* Make table rows display as cards */
   table, thead, tbody, th, td, tr { display: block; }
   thead tr { display: none; }
   tr { margin-bottom: 15px; background: #f9f9f9; color: #0f3057; padding: 10px; border-radius: 8px; }
@@ -145,12 +136,7 @@ footer {
     padding-left: 50%;
     text-align: left;
   }
-  td::before {
-    content: attr(data-label);
-    position: absolute;
-    left: 10px;
-    font-weight: bold;
-  }
+  td::before { content: attr(data-label); position: absolute; left: 10px; font-weight: bold; }
 }
 </style>
 </head>
@@ -175,7 +161,14 @@ footer {
     <input type="text" id="phone" placeholder="Phone Number" required />
     <input type="text" id="department" placeholder="Department (e.g., Choir)" />
     <input type="text" id="residence" placeholder="Residence / Estate" />
-    <input type="text" id="fellowship" placeholder="Fellowship" />
+    <select id="fellowship" required>
+      <option value="">-- Select Fellowship --</option>
+      <option value="Kingdom Generation">Kingdom Generation Fellowship</option>
+      <option value="Teenagers">Teenagers Fellowship</option>
+      <option value="Vijanaz">Vijanaz Fellowship</option>
+      <option value="Men">Men Fellowship</option>
+      <option value="Women">Women Fellowship</option>
+    </select>
     <button type="submit">Add Member</button>
   </form>
 </div>
@@ -201,10 +194,24 @@ footer {
   </table>
 </div>
 
+<div class="container">
+  <h2>Registered Admins</h2>
+  <table id="adminsTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Full Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Registered On</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
 <footer>
-  <p><strong>Deliverance Church DCN Nchiru</strong></p>
-  <p>P.O. Box 1234, Nchiru, Meru County, Kenya</p>
-  <p><em>“Raising Champions for Christ”</em></p>
+    &copy; 2025 DCN | Designed by Blessed Joe
 </footer>
 
 <script>
@@ -218,15 +225,17 @@ window.onload = async () => {
     } else {
       window.adminUser = data.admin;
       fetchMembers();
+      fetchAdmins();
     }
   } catch (err) {
     alert("Server error. Please refresh or try again later.");
   }
 };
 
+// Logout and redirect to homepage
 async function logout() {
   await fetch('/api/logout');
-  window.location.href = '/login.html';
+  window.location.href = '/index.html';
 }
 
 async function fetchMembers() {
@@ -235,7 +244,6 @@ async function fetchMembers() {
     const members = await res.json();
     const tbody = document.querySelector("#membersTable tbody");
     tbody.innerHTML = "";
-
     members.forEach(m => {
       const row = document.createElement("tr");
       row.innerHTML = `
@@ -252,9 +260,27 @@ async function fetchMembers() {
       `;
       tbody.appendChild(row);
     });
-  } catch (err) {
-    console.error("❌ Failed to fetch members:", err);
-  }
+  } catch (err) { console.error(err); }
+}
+
+async function fetchAdmins() {
+  try {
+    const res = await fetch('/admins');
+    const admins = await res.json();
+    const tbody = document.querySelector("#adminsTable tbody");
+    tbody.innerHTML = "";
+    admins.forEach(a => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td data-label="ID">${a.id}</td>
+        <td data-label="Full Name">${a.fullname}</td>
+        <td data-label="Email">${a.email}</td>
+        <td data-label="Role">${a.role || 'Admin'}</td>
+        <td data-label="Registered On">${new Date(a.created_at).toLocaleString()}</td>
+      `;
+      tbody.appendChild(row);
+    });
+  } catch (err) { console.error(err); }
 }
 
 document.getElementById("memberForm").addEventListener("submit", async e => {
@@ -267,7 +293,6 @@ document.getElementById("memberForm").addEventListener("submit", async e => {
     residence: document.getElementById("residence").value,
     fellowship: document.getElementById("fellowship").value
   };
-
   try {
     const res = await fetch('/add-member', {
       method: 'POST',
@@ -280,10 +305,7 @@ document.getElementById("memberForm").addEventListener("submit", async e => {
       document.getElementById("memberForm").reset();
       fetchMembers();
     }
-  } catch (err) {
-    alert("❌ Failed to add member. Try again later.");
-    console.error(err);
-  }
+  } catch (err) { console.error(err); alert("Failed to add member"); }
 });
 
 async function deleteMember(id) {
@@ -293,10 +315,7 @@ async function deleteMember(id) {
     const data = await res.json();
     alert(data.message);
     if(data.success) fetchMembers();
-  } catch (err) {
-    alert("❌ Failed to delete member. Try again later.");
-    console.error(err);
-  }
+  } catch (err) { console.error(err); alert("Failed to delete member"); }
 }
 </script>
 </body>

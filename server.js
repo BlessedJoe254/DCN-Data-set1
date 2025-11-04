@@ -29,7 +29,7 @@ db.connect((err) => {
   else console.log("✅ Connected to MySQL database (churchdb)");
 });
 
-// ✅ Create members table with 'added_by'
+// ✅ Create members table
 db.query(
   `CREATE TABLE IF NOT EXISTS members (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -61,7 +61,7 @@ db.query(
   }
 );
 
-// ✅ Register admin (one-time setup)
+// ✅ Register admin
 app.post("/api/register-admin", async (req, res) => {
   const { username, password } = req.body;
   try {
@@ -82,7 +82,7 @@ app.post("/api/register-admin", async (req, res) => {
   }
 });
 
-// ✅ Login route
+// ✅ Login
 app.post("/api/login", (req, res) => {
   const { username, password } = req.body;
   db.query("SELECT * FROM admins WHERE username=?", [username], async (err, results) => {
@@ -98,7 +98,7 @@ app.post("/api/login", (req, res) => {
   });
 });
 
-// ✅ Session check route
+// ✅ Check session
 app.get("/api/check-session", (req, res) => {
   if (req.session.admin) res.json({ loggedIn: true, admin: req.session.admin });
   else res.json({ loggedIn: false });
@@ -111,20 +111,14 @@ app.get("/api/logout", (req, res) => {
 
 // ✅ Middleware to protect admin routes
 function requireLogin(req, res, next) {
-  if (!req.session.admin) {
-    return res.status(403).json({ message: "Unauthorized access" });
-  }
+  if (!req.session.admin) return res.status(403).json({ message: "Unauthorized access" });
   next();
 }
 
 // ✅ Fetch all members (protected)
 app.get("/members", requireLogin, (req, res) => {
-  const sql = "SELECT * FROM members ORDER BY id DESC";
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error("❌ Database fetch error:", err);
-      return res.status(500).json({ error: "Database error", details: err });
-    }
+  db.query("SELECT * FROM members ORDER BY id DESC", (err, results) => {
+    if (err) return res.status(500).json({ error: "Database error", details: err });
     res.json(results);
   });
 });
@@ -132,52 +126,34 @@ app.get("/members", requireLogin, (req, res) => {
 // ✅ Fellowship-based filtering (protected)
 app.get("/members/fellowship/:name", requireLogin, (req, res) => {
   const { name } = req.params;
-  const sql = "SELECT * FROM members WHERE fellowship = ? ORDER BY id DESC";
-  db.query(sql, [name], (err, results) => {
+  db.query("SELECT * FROM members WHERE fellowship = ? ORDER BY id DESC", [name], (err, results) => {
     if (err) return res.status(500).json({ error: "Database error", details: err });
     res.json(results);
   });
 });
 
-// ✅ Add member (any logged-in admin can add)
+// ✅ Add member
 app.post("/add-member", requireLogin, (req, res) => {
   const { fullname, gender, phone, department, residence, fellowship } = req.body;
+  if (!fullname || !gender || !phone) return res.json({ success: false, message: "Please fill all required fields" });
 
-  if (!fullname || !gender || !phone) {
-    return res.json({ success: false, message: "Please fill all required fields" });
-  }
-
-  const sql =
-    "INSERT INTO members (fullname, gender, phone, department, residence, fellowship, added_by) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-  const addedBy = req.session.admin; // track which admin added the member
-
-  db.query(sql, [fullname, gender, phone, department, residence, fellowship, addedBy], (err, result) => {
-    if (err) {
-      console.error(`❌ Error inserting member by ${addedBy}:`, err);
-      return res.status(500).json({ success: false, message: "Database error", error: err });
+  const addedBy = req.session.admin;
+  db.query(
+    "INSERT INTO members (fullname, gender, phone, department, residence, fellowship, added_by) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    [fullname, gender, phone, department, residence, fellowship, addedBy],
+    (err, result) => {
+      if (err) return res.status(500).json({ success: false, message: "Database error", error: err });
+      res.json({ success: true, message: "✅ Member added successfully!" });
     }
-    console.log(`✅ Member added successfully by ${addedBy}:`, result.insertId);
-    res.json({ success: true, message: "✅ Member added successfully!" });
-  });
+  );
 });
 
-// ✅ DELETE member route (protected)
+// ✅ Delete member
 app.delete("/delete-member/:id", requireLogin, (req, res) => {
   const memberId = req.params.id;
-
-  const sql = "DELETE FROM members WHERE id = ?";
-  db.query(sql, [memberId], (err, result) => {
-    if (err) {
-      console.error("❌ Error deleting member:", err);
-      return res.status(500).json({ success: false, message: "Database error" });
-    }
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ success: false, message: "Member not found" });
-    }
-
-    console.log(`✅ Member deleted successfully by ${req.session.admin}: ID ${memberId}`);
+  db.query("DELETE FROM members WHERE id = ?", [memberId], (err, result) => {
+    if (err) return res.status(500).json({ success: false, message: "Database error" });
+    if (result.affectedRows === 0) return res.status(404).json({ success: false, message: "Member not found" });
     res.json({ success: true, message: "✅ Member deleted successfully" });
   });
 });
@@ -187,7 +163,22 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
+// ✅ Public route for homepage stats (no login required)
+app.get("/public/members", (req, res) => {
+  db.query("SELECT * FROM members ORDER BY id DESC", (err, results) => {
+    if (err) return res.status(500).json({ error: "Database error", details: err });
+    res.json(results);
+  });
+});
+
+// ✅ Public route for fellowship-based stats
+app.get("/public/members/fellowship/:name", (req, res) => {
+  const { name } = req.params;
+  db.query("SELECT * FROM members WHERE fellowship = ? ORDER BY id DESC", [name], (err, results) => {
+    if (err) return res.status(500).json({ error: "Database error", details: err });
+    res.json(results);
+  });
+});
+
 // ✅ Start server
-app.listen(PORT, () =>
-  console.log(`🚀 Server running at http://localhost:${PORT}`)
-);
+app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));
