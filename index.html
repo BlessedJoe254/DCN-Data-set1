@@ -21,6 +21,7 @@
       align-items: center;
       justify-content: space-between;
       color: white;
+      flex-wrap: wrap;
     }
 
     header img.logo {
@@ -213,39 +214,30 @@
   <script>
     async function fetchStats() {
       try {
-        // ✅ Fetch from public members route (no login required)
         const res = await fetch('/public/members');
         const members = await res.json();
 
-        const stats = {
-          totalMembers: members.length,
-          KingdomGeneration: 0,
-          Teenagers: 0,
-          Vijanaz: 0,
-          Men: 0,
-          Women: 0,
-          totalMale: 0,
-          totalFemale: 0
-        };
+        // Gender stats
+        const totalMembers = members.length;
+        const totalMale = members.filter(m => m.gender === 'Male').length;
+        const totalFemale = members.filter(m => m.gender === 'Female').length;
 
-        members.forEach(m => {
-          if(m.fellowship === 'Kingdom Generation Fellowship') stats.KingdomGeneration++;
-          if(m.fellowship === 'Teenagers Fellowship') stats.Teenagers++;
-          if(m.fellowship === 'Vijanaz Fellowship') stats.Vijanaz++;
-          if(m.fellowship === 'Men Fellowship') stats.Men++;
-          if(m.fellowship === 'Women Fellowship') stats.Women++;
-          if(m.gender === 'Male') stats.totalMale++;
-          if(m.gender === 'Female') stats.totalFemale++;
-        });
+        // Fellowship stats - dynamically based on actual fellowship names in the database
+        const kingdomGeneration = members.filter(m => m.fellowship.includes('Kingdom Generation')).length;
+        const teenagers = members.filter(m => m.fellowship.includes('Teenagers')).length;
+        const vijanaz = members.filter(m => m.fellowship.includes('Vijanaz')).length;
+        const menFellowship = members.filter(m => m.fellowship.includes('Men')).length;
+        const womenFellowship = members.filter(m => m.fellowship.includes('Women')).length;
 
-        document.getElementById('totalMembers').innerText = stats.totalMembers;
-        document.getElementById('totalMale').innerText = stats.totalMale;
-        document.getElementById('totalFemale').innerText = stats.totalFemale;
-        document.getElementById('kingdomGeneration').innerText = stats.KingdomGeneration;
-        document.getElementById('vijanaz').innerText = stats.Vijanaz;
-        document.getElementById('menFellowship').innerText = stats.Men;
-        document.getElementById('womenFellowship').innerText = stats.Women;
-        document.getElementById('teenagers').innerText = stats.Teenagers;
+        // Update the cards
+        document.getElementById('totalMembers').innerText = totalMembers;
+        document.getElementById('totalMale').innerText = totalMale;
+        document.getElementById('totalFemale').innerText = totalFemale;
+        document.getElementById('kingdomGeneration').innerText = kingdomGeneration;
+        document.getElementById('teenagers').innerText = teenagers;
+        document.getElementById('vijanaz').innerText = vijanaz;
+        document.getElementById('menFellowship').innerText = menFellowship;
+        document.getElementById('womenFellowship').innerText = womenFellowship;
 
       } catch (err) {
         console.error('❌ Failed to fetch members stats:', err);
